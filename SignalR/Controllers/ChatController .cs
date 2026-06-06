@@ -11,22 +11,15 @@ namespace SignalR.Controllers
     {
         private readonly IHubContext<ChatHub> _hubContext;
 
-        public ChatController(
-            IHubContext<ChatHub> hubContext)
+        public ChatController(IHubContext<ChatHub> hubContext)
         {
             _hubContext = hubContext;
         }
 
         [HttpPost("broadcast")]
-        public async Task<IActionResult> Broadcast(
-            string message)
+        public async Task<IActionResult> Broadcast(string message)
         {
-            await _hubContext.Clients.All.SendAsync(
-                "ReceiveMessage",
-                "System",
-                message,
-                DateTime.Now);
-
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage","System",message,DateTime.Now);
             return Ok("Message Broadcasted");
         }
     }
