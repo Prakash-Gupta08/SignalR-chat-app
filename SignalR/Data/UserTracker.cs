@@ -2,6 +2,9 @@
 {
     public class UserTracker
     {
-        public static List<string> Connections = new List<string>();
+
+
+        public static List<UserConnection> Users
+                = new List<UserConnection>();
     }
 }

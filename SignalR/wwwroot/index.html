@@ -11,13 +11,27 @@
 <body>
     <h3 id="connectionId"></h3>
     <h3 id="onlineUsers"></h3>
+    <h3>Connected Users</h3>
     <input id="userName" placeholder="User Name" />
     <input id="message" placeholder="Message" />
     <button onclick="sendMessage()">
         Send
     </button>
+    <h3>Private Message</h3>
+
+
+    <input id="targetConnectionId"
+           placeholder="Target ConnectionId" />
+
+    <input id="privateMessage"
+           placeholder="Message" />
+
+    <button onclick="sendPrivateMessage()">
+        Send Private
+    </button>
 
     <ul id="messages"></ul>
+    <ul id="privateMessages"></ul>
 
     <script>
 
@@ -33,23 +47,157 @@
         //        `Connection Id: ${connectionId}`;
         //});
 
+        //connection.on(
+        //    "OnlineUsersCount",
+        //    (count) => {
+
+        //        document
+        //            .getElementById("onlineUsers")
+        //            .innerText =
+        //            `Online Users: ${count}`;
+        //    });
+
+        //connection.on(
+        //    "UsersUpdated",
+        //    (users) => {
+
+        //        const userList =
+        //            document.getElementById("users");
+
+        //        userList.innerHTML = "";
+
+        //        users.forEach(user => {
+
+        //            const li =
+        //                document.createElement("li");
+
+        //            li.textContent =
+        //                `${user.userName}`;
+
+        //            userList.appendChild(li);
+        //        });
+        //    });
+
         connection.on(
-            "OnlineUsersCount",
-            (count) => {
+            "UsersUpdated",
+            (users) => {
+
+                console.log("Users Updated:", users);
+
+                const userList =
+                    document.getElementById("users");
+
+                userList.innerHTML = "";
+
+                users.forEach(user => {
+
+                    const li =
+                        document.createElement("li");
+
+                    li.textContent =
+                        user.userName;
+
+                    userList.appendChild(li);
+                });
+            });
+        connection.on(
+            "ReceiveMessage",
+            (user, message, time) => {
+
+                const li =
+                    document.createElement("li");
+
+                li.textContent =
+                    `${user}: ${message}`;
 
                 document
-                    .getElementById("onlineUsers")
-                    .innerText =
-                    `Online Users: ${count}`;
+                    .getElementById("messages")
+                    .appendChild(li);
             });
 
-        connection.start();
+        //connection.on(
+        //    "UsersUpdated",
+        //    (users) => {
+
+        //        const userList =
+        //            document.getElementById("users");
+
+        //        userList.innerHTML = "";
+
+        //        users.forEach(user => {
+
+        //            const li =
+        //                document.createElement("li");
+
+        //            li.textContent =
+        //                `${user.userName}
+        //             (${user.connectionId})`;
+
+        //            userList.appendChild(li);
+        //        });
+        //    });
+
+        connection.on(
+            "ReceivePrivateMessage",
+            (sender, message, time) => {
+
+                const li =
+                    document.createElement("li");
+
+                li.textContent =
+                    `[Private] ${sender}: ${message}`;
+
+                document
+                    .getElementById("privateMessages")
+                    .appendChild(li);
+            });
+
+        //connection.on(
+        //    "ReceivePrivateMessage",
+        //    (sender, message, time) => {
+        //        alert(
+        //            `Private Message from ${sender}: ${message}`);
+        //    });
+
+        //connection.start();
+        connection.start()
+            .then(() => {
+
+                const userName =
+                    prompt("Enter Your Name");
+
+                connection.invoke(
+                    "RegisterUser",
+                    userName);
+            })
+            .catch(err =>
+                console.error(err));
 
 
         function sendMessage() {
             const user = document.getElementById("userName").value;
             const message = document.getElementById("message").value;
             connection.invoke("SendMessage", user, message);
+        }
+
+        function sendPrivateMessage() {
+            const targetConnectionId =
+                document.getElementById(
+                    "targetConnectionId").value;
+
+            const senderName =
+                document.getElementById(
+                    "userName").value;
+
+            const message =
+                document.getElementById(
+                    "privateMessage").value;
+
+            connection.invoke(
+                "SendPrivateMessage",
+                targetConnectionId,
+                senderName,
+                message);
         }
     </script>
 
