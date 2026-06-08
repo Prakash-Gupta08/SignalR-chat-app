@@ -138,26 +138,26 @@
         //    });
 
         connection.on(
+    "ReceivePrivateMessage",
+    (sender, message, time) => {
+
+        const li =
+            document.createElement("li");
+
+        li.textContent =
+            `[Private] ${sender}: ${message}`;
+
+        document
+            .getElementById("privateMessages")
+            .appendChild(li);
+    });
+
+        connection.on(
             "ReceivePrivateMessage",
             (sender, message, time) => {
-
-                const li =
-                    document.createElement("li");
-
-                li.textContent =
-                    `[Private] ${sender}: ${message}`;
-
-                document
-                    .getElementById("privateMessages")
-                    .appendChild(li);
+                alert(
+                    `Private Message from ${sender}: ${message}`);
             });
-
-        //connection.on(
-        //    "ReceivePrivateMessage",
-        //    (sender, message, time) => {
-        //        alert(
-        //            `Private Message from ${sender}: ${message}`);
-        //    });
 
         //connection.start();
         connection.start()
